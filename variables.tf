@@ -1,6 +1,6 @@
-variable "cdn_frontdoor_security_policys" {
+variable "cdn_frontdoor_security_policies" {
   description = <<EOT
-Map of cdn_frontdoor_security_policys, attributes below
+Map of cdn_frontdoor_security_policies, attributes below
 Required:
     - cdn_frontdoor_profile_id
     - name
@@ -30,7 +30,7 @@ EOT
   }))
   validation {
     condition = alltrue([
-      for k, v in var.cdn_frontdoor_security_policys : (
+      for k, v in var.cdn_frontdoor_security_policies : (
         length(v.security_policies.firewall.association.domain) <= 500
       )
     ])

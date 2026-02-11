@@ -1,5 +1,5 @@
-resource "azurerm_cdn_frontdoor_security_policy" "cdn_frontdoor_security_policys" {
-  for_each = var.cdn_frontdoor_security_policys
+resource "azurerm_cdn_frontdoor_security_policy" "cdn_frontdoor_security_policies" {
+  for_each = var.cdn_frontdoor_security_policies
 
   cdn_frontdoor_profile_id = each.value.cdn_frontdoor_profile_id
   name                     = each.value.name
