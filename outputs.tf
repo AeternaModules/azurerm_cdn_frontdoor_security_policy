@@ -1,3 +1,7 @@
+output "cdn_frontdoor_security_policies_id" {
+  description = "Map of id values across all cdn_frontdoor_security_policies, keyed the same as var.cdn_frontdoor_security_policies"
+  value       = { for k, v in azurerm_cdn_frontdoor_security_policy.cdn_frontdoor_security_policies : k => v.id }
+}
 output "cdn_frontdoor_security_policies_cdn_frontdoor_profile_id" {
   description = "Map of cdn_frontdoor_profile_id values across all cdn_frontdoor_security_policies, keyed the same as var.cdn_frontdoor_security_policies"
   value       = { for k, v in azurerm_cdn_frontdoor_security_policy.cdn_frontdoor_security_policies : k => v.cdn_frontdoor_profile_id }
