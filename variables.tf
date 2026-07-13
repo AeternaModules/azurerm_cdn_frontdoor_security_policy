@@ -31,18 +31,10 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.cdn_frontdoor_security_policies : (
-        length(v.security_policies.firewall.association.domain) <= 500
+        length(v.security_policies.firewall.association.domain) >= 1 && length(v.security_policies.firewall.association.domain) <= 500
       )
     ])
-    error_message = "Each domain list must contain at most 500 items"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.cdn_frontdoor_security_policies : (
-        contains(["/*"], v.security_policies.firewall.association.patterns_to_match)
-      )
-    ])
-    error_message = "must be one of: /*"
+    error_message = "Each domain list must contain between 1 and 500 items"
   }
   # --- Unconfirmed validation candidates, derived from azurerm_cdn_frontdoor_security_policy's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
@@ -60,5 +52,8 @@ EOT
   #   source:    [from validate.FrontDoorFirewallPolicyID] err != nil
   # path: security_policies.firewall.association.domain.cdn_frontdoor_domain_id
   #   source:    validate.FrontDoorSecurityPolicyDomainID: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: security_policies.firewall.association.patterns_to_match[*]
+  #   condition: contains(["/*"], value)
+  #   message:   must be one of: /*
 }
 
