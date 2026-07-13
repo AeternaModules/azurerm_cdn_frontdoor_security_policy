@@ -36,24 +36,14 @@ EOT
     ])
     error_message = "Each domain list must contain between 1 and 500 items"
   }
-  # --- Unconfirmed validation candidates, derived from azurerm_cdn_frontdoor_security_policy's provider source ---
-  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
-  # or a path that crosses a list-typed block (needs its own for_each wrapping).
-  # Review, translate into a real validation{} block above, and delete once confirmed.
-  # path: name
-  #   source:    validate.FrontDoorSecurityPolicyName: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
-  # path: cdn_frontdoor_profile_id
-  #   source:    [from validate.FrontDoorProfileID] !ok
-  # path: cdn_frontdoor_profile_id
-  #   source:    [from validate.FrontDoorProfileID] err != nil
-  # path: security_policies.firewall.cdn_frontdoor_firewall_policy_id
-  #   source:    [from validate.FrontDoorFirewallPolicyID] !ok
-  # path: security_policies.firewall.cdn_frontdoor_firewall_policy_id
-  #   source:    [from validate.FrontDoorFirewallPolicyID] err != nil
-  # path: security_policies.firewall.association.domain.cdn_frontdoor_domain_id
-  #   source:    validate.FrontDoorSecurityPolicyDomainID: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
-  # path: security_policies.firewall.association.patterns_to_match[*]
-  #   condition: contains(["/*"], value)
-  #   message:   must be one of: /*
+  validation {
+    condition = alltrue([
+      for k, v in var.cdn_frontdoor_security_policies : (
+        alltrue([for x in v.security_policies.firewall.association.patterns_to_match : contains(["/*"], x)])
+      )
+    ])
+    error_message = "must be one of: /*"
+  }
+  # Note: 6 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
